@@ -1,6 +1,5 @@
 from selenium.webdriver import Chrome, ChromeOptions
 import time
-from selenium.webdriver.common.action_chains import ActionChains
 from random import randint
 
 # task settings
@@ -41,6 +40,12 @@ def enter(xpath, key):
         inp.send_keys(char)
         time.sleep(randint(1,10)/10)
     return inp
+
+def authorisation():
+    pass
+
+def scroll():
+    driver.find_element_by_css_selector('body').send_keys(Keys.DOWN)
 
 def startBot():
     driver.get(LINK)
