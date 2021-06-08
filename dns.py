@@ -4,7 +4,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from random import randint
 
 # task settings
-keys = ['city', 'tel', 'mail', 'shop']
+keys = ['city', 'tel', 'mail', 'shop', 'cardNubmer', 'cardMonth', 'cardYear', 'cardCVV']
 
 options = dict()
 
@@ -42,16 +42,19 @@ def enter(xpath, key):
         time.sleep(randint(1,10)/10)
     return inp
 
-def toStart():
+def startBot():
     driver.get(LINK)
     time.sleep(3)
     # choose town
     driver.execute_script("document.querySelector('.w-choose-city-widget-label').click()")
 
-    try:
-        enter("//input[@data-role = 'search-city']", options['city']).send_keys('\n')
-    except:
-        driver.execute_script("document.querySelector('.w-choose-city-widget-label').click()")
+    while True:
+        try:
+            enter("//input[@data-role = 'search-city']", options['city']).send_keys('\n')
+            break
+        except:
+            driver.execute_script("document.querySelector('.w-choose-city-widget-label').click()")
+            driver.refresh()
     
     # выбор категории комплектующие
     smartClick("//a[contains(text(), 'комплектующие')]")
@@ -93,18 +96,17 @@ def toStart():
     # покупка
     smartClick("//div[contains(text(), 'Подтвердить заказ')]")
 
-    code = input()
+    # подтверждение телефона
+    code = input('Код из смс')
     enter("//label[contains(text(), 'Код')]/preceding-sibling::input", code)
+    smartClick("//div[contains(text(), 'Подтвердить')]")
 
     def cardEnter():
-        cardNumber = file.readline().strip()
-        cardMonth = file.readline().strip()
-        cardYear = file.readline().strip()[2:]
-        cardCVV = file.readline().strip()
-        enter("//input[@id='cardNumber']", cardNumber)   
-        enter("//input[@name='skr_month']", cardMonth)   
-        enter("//input[@name='skr_year']", cardYear)   
-        enter("//input[@name='skr_cardCvc']", cardCVV)   
+        enter("//input[@id='cardNumber']", options['cardNumber'])   
+        enter("//input[@name='skr_month']", options['cardMonth'])   
+        enter("//input[@name='skr_year']", options['cardYear'])   
+        enter("//input[@name='skr_cardCvc']", options['cardCVV'])   
         smartClick("//span[contains(text(), 'Заплатить')]")
-toStart()
+
+startBot()
 
